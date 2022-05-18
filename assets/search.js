@@ -87,19 +87,73 @@ require([
         return String(keyword).replace(/([\*\.\?\+\$\^\[\]\(\)\{\}\|\/\\])/g, '\\$1');
     }
 
+    function fuzzyMatch(str, keyword){
+        keyword = keyword.trim();
+        if (keyword.length === 0){
+            return undefined;
+        }
+        keyword = keyword.toLowerCase();
+        let keys = keyword.split(' ');
+        results = [];
+        let found = true;
+        for (const key of keys) {
+            if(key.length === 0){
+                continue;
+            }
+            let index = str.indexOf(key);
+            if(index === -1){
+                found = false;
+                break;
+            }else{
+                results.push({index, key});
+            }
+            
+        }
+        
+        if(!found){
+            return undefined;
+        }
+        results.sort(function(a, b){
+            if(a.index < b.index) return -1;
+            if(a.index > b.index) return 1;
+            return 0;
+        })
+        let body = "";
+        let sep = "...............";
+        let lastIndex = 0;
+        const BODY_LEN = 300;
+        results.forEach(item=>{
+            let key = item.key;
+            let index = item.index;
+            if ((index + key.length) < lastIndex){
+                // 上一个包含了该字符
+                body = body.replace(key, '<span class="search-highlight-keyword">' + key + '</span>');
+                return;
+            }
+            body += str.substr(Math.max(0, index-BODY_LEN), BODY_LEN + key.length + BODY_LEN).replace(key, '<span class="search-highlight-keyword">' + key + '</span>');
+            lastIndex = lastIndex + key.length + BODY_LEN;
+            body += sep;
+        })
+        body = body.slice(0, body.length - sep.length);
+        return body;
+    }
+
     function query(keyword) {
         if (keyword == null || keyword.trim() === '') return;
 
         var results = [],
             index = -1;
         for (var page in INDEX_DATA) {
-            if ((index = INDEX_DATA[page].body.toLowerCase().indexOf(keyword.toLowerCase())) !== -1) {
+            let str = INDEX_DATA[page].body.toLowerCase();
+            let body = fuzzyMatch(str, keyword);
+            if(body){
                 results.push({
                     url: page,
                     title: INDEX_DATA[page].title,
-                    body: INDEX_DATA[page].body.substr(Math.max(0, index - 50), MAX_DESCRIPTION_SIZE).replace(new RegExp('(' + escapeReg(keyword) + ')', 'gi'), '<span class="search-highlight-keyword">$1</span>')
+                    body: body
                 });
             }
+            
         }
         displayResults({
             count: results.length,
