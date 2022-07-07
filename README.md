@@ -4,6 +4,8 @@ Gitbook search engine pro. (支持中文搜索)
 
 支持模糊查找
 
+支持文件名查找
+
 You can search any characters(utf-8) and highlight it in your GitBook, not only english(exp:Chinese).
 
 > Note: Only gitbook >= 3.0.0 support

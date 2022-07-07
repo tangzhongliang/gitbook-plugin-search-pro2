@@ -27,8 +27,8 @@ module.exports = {
             var text;
            
             this.log.debug.ln('index page', page.path);
-
-            text = page.content;
+            filename = page.path.split('\\').pop().split('/').pop();
+            text = filename + "\n" + page.content;
             // Decode HTML
             text = Html.decode(text);
             // Strip HTML tags
