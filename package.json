@@ -1,7 +1,7 @@
 {
   "name": "gitbook-plugin-search-pro2",
-  "version": "1.0.1",
-  "description": "Gitbook search engine pro2. (支持中文搜索, 模糊匹配, 文件名查找)",
+  "version": "1.0.2",
+  "description": "Gitbook search engine pro2. (支持中文搜索, 模糊匹配, 文件名查找, 父目录查找)",
   "author": {
     "name": "tangzhongliang",
     "email": "1071954237@qq.com"
